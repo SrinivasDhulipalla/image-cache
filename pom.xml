@@ -120,6 +120,16 @@
   </dependencies>
 
   <profiles>
+    <!--
+     All profiles do not have any password properties
+    -->
+    <profile>
+      <id>uat</id>
+      <properties>
+        <imgcache.repository>/mnt/auto/image-cache</imgcache.repository>
+      </properties>
+    </profile>
+
     <profile>
       <id>prod</id>
       <properties>
