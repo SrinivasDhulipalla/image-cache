@@ -25,7 +25,7 @@
 
   <groupId>org.gbif</groupId>
   <artifactId>image-cache</artifactId>
-  <version>0.7</version>
+  <version>0.8-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>image-cache</name>
@@ -36,7 +36,7 @@
     <connection>scm:git:git@github.com:gbif/image-cache.git</connection>
     <url>https://github.com/gbif/image-cache</url>
     <developerConnection>scm:git:git@github.com:gbif/image-cache.git</developerConnection>
-    <tag>image-cache-0.7</tag>
+    <tag>HEAD</tag>
   </scm>
 
 
