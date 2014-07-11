@@ -100,14 +100,14 @@
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
       <version>${javax.inject.version}</version>
-    </dependency>    
+    </dependency>
     <!-- Logging implementation for Runtime -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback.version}</version>
       <scope>runtime</scope>
-    </dependency>    
+    </dependency>
     <!-- To ship JUL (e.g. Guice) logging to SLF4J -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -139,7 +139,7 @@
     <profile>
       <id>prod</id>
       <properties>
-        <imgcache.repository>/mnt/image-cache</imgcache.repository>
+        <imgcache.repository>/mnt/auto/image-cache</imgcache.repository>
       </properties>
     </profile>
 
