@@ -1,13 +1,5 @@
 package org.gbif.imgcache;
 
-import java.io.IOException;
-import java.net.URL;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 import com.google.common.net.HttpHeaders;
@@ -16,18 +8,25 @@ import com.google.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URL;
+
 @Singleton
 public class ImageCacheServlet extends HttpServlet {
 
   private final Logger LOG = LoggerFactory.getLogger(ImageCacheServlet.class);
   private static final long serialVersionUID = 8681716273998041332L;
-  private final ImageCacheService cache;
+  private final ImageCacheHdfsService cache;
   private static final String SIZE_PARAM = "size";
   private static final String URL_PARAM = "url";
 
 
   @Inject
-  public ImageCacheServlet(ImageCacheService cache) {
+  public ImageCacheServlet(ImageCacheHdfsService cache) {
     this.cache = cache;
   }
 

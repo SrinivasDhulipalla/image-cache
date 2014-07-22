@@ -1,12 +1,11 @@
 package org.gbif.imgcache.guice;
 
-import org.gbif.imgcache.ImageCacheService;
-
-import java.util.Properties;
-
 import com.google.inject.PrivateModule;
 import com.google.inject.Scopes;
 import com.google.inject.name.Names;
+import org.gbif.imgcache.ImageCacheHdfsService;
+
+import java.util.Properties;
 
 public class PrivateCacheModule extends PrivateModule{
   private final Properties properties;
@@ -20,9 +19,9 @@ public class PrivateCacheModule extends PrivateModule{
     Names.bindProperties(binder(), properties);
 
     System.out.println(properties);
-    bind(ImageCacheService.class).in(Scopes.SINGLETON);
+    bind(ImageCacheHdfsService.class).in(Scopes.SINGLETON);
 
-    expose(ImageCacheService.class);
+    expose(ImageCacheHdfsService.class);
   }
 
 }
