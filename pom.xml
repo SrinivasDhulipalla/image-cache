@@ -42,15 +42,15 @@
 
   <properties>
     <slf4j.version>1.7.5</slf4j.version>
-    <logback.version>1.0.13</logback.version>
+    <logback.version>1.1.2</logback.version>
     <servlet-api.version>2.5</servlet-api.version>
     <guice.version>3.0</guice.version>
-    <guava.version>14.0.1</guava.version>
-    <thumbnailator.version>0.4.6</thumbnailator.version>
+    <guava.version>17.0</guava.version>
+    <thumbnailator.version>0.4.7</thumbnailator.version>
     <javax.inject.version>1</javax.inject.version>
     <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
     <gbif-microservice.version>0.1-SNAPSHOT</gbif-microservice.version>
-    <gbif-common.version>0.17-SNAPSHOT</gbif-common.version>
+    <gbif-common.version>0.17</gbif-common.version>
   </properties>
 
   <repositories>
@@ -192,27 +192,10 @@
   </dependencies>
 
   <profiles>
-    <!--
-     All profiles do not have any password properties
-    -->
     <profile>
-      <id>uat</id>
+      <id>tmp</id>
       <properties>
-        <imgcache.repository>/mnt/auto/image-cache</imgcache.repository>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>prod</id>
-      <properties>
-        <imgcache.repository>/mnt/auto/image-cache</imgcache.repository>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>dev</id>
-      <properties>
-        <imgcache.repository>/mnt/auto/image-cache</imgcache.repository>
+        <imgcache.repository>/tmp/image-cache</imgcache.repository>
       </properties>
     </profile>
   </profiles>
