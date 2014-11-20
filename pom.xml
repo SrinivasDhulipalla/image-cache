@@ -25,7 +25,7 @@
 
   <groupId>org.gbif</groupId>
   <artifactId>image-cache</artifactId>
-  <version>0.8-SNAPSHOT</version>
+  <version>0.8</version>
   <packaging>jar</packaging>
 
   <name>image-cache</name>
@@ -36,7 +36,7 @@
     <connection>scm:git:git@github.com:gbif/image-cache.git</connection>
     <url>https://github.com/gbif/image-cache</url>
     <developerConnection>scm:git:git@github.com:gbif/image-cache.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>image-cache-0.8</tag>
   </scm>
 
 
@@ -90,10 +90,8 @@
             <configuration>
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <transformers>
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                <transformer
-                  implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.gbif.ws.app.Application</mainClass>
                 </transformer>
               </transformers>
