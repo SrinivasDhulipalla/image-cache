@@ -5,7 +5,6 @@ import org.gbif.utils.file.properties.PropertiesUtil;
 import org.gbif.ws.app.ConfUtils;
 
 import java.io.IOException;
-import java.util.Properties;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
@@ -16,12 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
- * Sets up the rendering Servlet, and the Cube injection.
- * This can operate in 2 modes:
- * i) Using a memory cube, that reads from a GZipped CSV file with lat,lng,count (for local testing)
- * ii) Using an HBase backed cube (for real operation)
- */
 public class GuiceListener extends GuiceServletContextListener {
 
   private static final Logger LOG = LoggerFactory.getLogger(GuiceListener.class);
