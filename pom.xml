@@ -49,8 +49,8 @@
     <thumbnailator.version>0.4.6</thumbnailator.version>
     <javax.inject.version>1</javax.inject.version>
     <maven-shade-plugin.version>2.3</maven-shade-plugin.version>
-    <gbif-microservice.version>0.1-SNAPSHOT</gbif-microservice.version>
-    <gbif-common.version>0.17-SNAPSHOT</gbif-common.version>
+    <gbif-microservice.version>0.1</gbif-microservice.version>
+    <gbif-common.version>0.17</gbif-common.version>
   </properties>
 
   <repositories>
