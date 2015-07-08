@@ -12,7 +12,7 @@ public enum ImageSize {
   public final int width;
   public final int height;
 
-  private ImageSize(int width, int height) {
+  ImageSize(int width, int height) {
     this.width = width;
     this.height = height;
   }

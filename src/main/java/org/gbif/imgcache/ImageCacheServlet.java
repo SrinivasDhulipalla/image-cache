@@ -35,26 +35,23 @@ public class ImageCacheServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final ImageSize size = ImageSize.fromString(req.getParameter(SIZE_PARAM));
 
-    URL url = null;
     try {
-      url = new URL(req.getParameter(URL_PARAM));
-      Preconditions.checkNotNull(url);
+      URL url = new URL(req.getParameter(URL_PARAM));
+      try {
+        CachedImage img = cache.get(url, size);
+        resp.setHeader(HttpHeaders.CONTENT_TYPE, img.getMimeType());
+        ByteStreams.copy(img.openStream(), resp.getOutputStream());
+      } catch (IOException e) {
+        String errMsg = String.format("No image found for url '%s'", url);
+        LOG.error(errMsg, e);
+        resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
+      } finally {
+        resp.flushBuffer();
+      }
+
     } catch (Exception e) {
       LOG.error("Invalid image url requested", e);
       resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Please provide a valid image url parameter");
-      return;
-    }
-
-    try {
-      CachedImage img = cache.get(url, size);
-      resp.setHeader(HttpHeaders.CONTENT_TYPE, img.getMimeType());
-      ByteStreams.copy(img, resp.getOutputStream());
-    } catch (IOException e) {
-      String errMsg = String.format("No image found for url '%s'", url);
-      LOG.error(errMsg, e);
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
-    } finally {
-      resp.flushBuffer();
     }
   }
 }
