@@ -27,15 +27,17 @@
 
   <properties>
     <jdkLevel>1.8</jdkLevel>
-    <slf4j.version>1.7.12</slf4j.version>
-    <logback.version>1.1.3</logback.version>
-    <servlet-api.version>2.5</servlet-api.version>
-    <guice.version>4.0</guice.version>
-    <guava.version>18.0</guava.version>
-    <thumbnailator.version>0.4.8</thumbnailator.version>
-    <maven-shade-plugin.version>2.4</maven-shade-plugin.version>
-    <gbif-microservice.version>0.3</gbif-microservice.version>
+
+    <findbugs-jsr305.version>3.0.0</findbugs-jsr305.version>
     <gbif-common.version>0.18</gbif-common.version>
+    <gbif-microservice.version>0.3</gbif-microservice.version>
+    <guava.version>18.0</guava.version>
+    <guice.version>4.0</guice.version>
+    <logback.version>1.1.3</logback.version>
+    <maven-shade-plugin.version>2.4</maven-shade-plugin.version>
+    <servlet-api.version>2.5</servlet-api.version>
+    <slf4j.version>1.7.12</slf4j.version>
+    <thumbnailator.version>0.4.8</thumbnailator.version>
   </properties>
 
   <repositories>
@@ -136,6 +138,11 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${findbugs-jsr305.version}</version>
     </dependency>
     <!-- Logging implementation for Runtime -->
     <dependency>

@@ -12,11 +12,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import javax.imageio.ImageIO;
-import javax.inject.Inject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closer;
+import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.coobird.thumbnailator.Thumbnails;
 import org.slf4j.Logger;
