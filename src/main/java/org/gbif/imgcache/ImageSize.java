@@ -27,7 +27,7 @@ public enum ImageSize {
         }
       }
     }
-    return ImageSize.THUMBNAIL;
+    return THUMBNAIL;
   }
 
 }

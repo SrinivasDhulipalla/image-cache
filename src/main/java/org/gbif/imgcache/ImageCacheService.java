@@ -56,7 +56,7 @@ public class ImageCacheService {
     return new CachedImage(url, size, MIME_TYPE, imgFile);
   }
 
-  private String buildFileName(URL url, ImageSize size) {
+  private static String buildFileName(URL url, ImageSize size) {
     // try to get some sensible filename - optional
     String fileName;
     try {
@@ -116,7 +116,7 @@ public class ImageCacheService {
       HttpURLConnection.setFollowRedirects(false);
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
       con.setRequestMethod(HEAD_METHOD);
-      return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+      return HttpURLConnection.HTTP_OK == con.getResponseCode();
     } catch (Exception e) {
       LOG.error(String.format("Error getting file %s", url), e);
       return false;
@@ -138,7 +138,7 @@ public class ImageCacheService {
   }
 
   /**
-   * Produces an image for each size in the sizes paramater.
+   * Produces an image for each size in the sizes parameter.
    */
   private void produceImage(URL url, ImageSize... sizes) throws IOException {
     for (ImageSize size : sizes) {

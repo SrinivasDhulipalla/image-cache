@@ -37,9 +37,8 @@ public class GuiceListener extends GuiceServletContextListener {
                                     APPLICATION_PROPERTIES))));
     } catch (IOException ex) {
       LOG.error(ERROR_MSG, ex);
-      Throwables.propagate(ex);
+      throw Throwables.propagate(ex);
     }
-    throw new IllegalStateException(ERROR_MSG);
   }
 
 }

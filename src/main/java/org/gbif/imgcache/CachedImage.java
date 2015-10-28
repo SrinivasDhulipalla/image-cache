@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.net.URL;
 
 import com.google.common.io.ByteSource;
-import com.google.common.io.InputSupplier;
 
 public class CachedImage extends ByteSource {
   private final URL source;
