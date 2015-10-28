@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class ImageCacheService {
 
-  private final Logger LOG = LoggerFactory.getLogger(ImageCacheService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ImageCacheService.class);
 
   private final File repo;
   private static final String ENC = "UTF8";
@@ -93,25 +93,22 @@ public class ImageCacheService {
 
     OutputStream out = null;
     InputStream source = null;
-    Closer closer = Closer.create();
-    try {
+    try (Closer closer = Closer.create()) {
       URLConnection con = url.openConnection();
       con.setConnectTimeout(CONNECT_TIMEOUT_MS);
       con.setReadTimeout(TIMEOUT_MS);
       source = closer.register(con.getInputStream());
-      // create parent folder that is unque for the original image
+      // create parent folder that is unique for the original image
       origImg.getParentFile().mkdir();
       out = closer.register(new FileOutputStream(origImg));
       ByteStreams.copy(source, out);
-    } finally {
-      closer.close();
     }
   }
 
   /**
    * Checks if the remote URL exists.
    */
-  private boolean exists(URL url) {
+  private static boolean exists(URL url) {
     try {
       HttpURLConnection.setFollowRedirects(false);
       HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -142,14 +139,14 @@ public class ImageCacheService {
    */
   private void produceImage(URL url, ImageSize... sizes) throws IOException {
     for (ImageSize size : sizes) {
-      produceImage(url, size);
+      createImage(url, size);
     }
   }
 
   /**
    * Produces a single image from the url with the specified size.
    */
-  private void produceImage(URL url, ImageSize size) throws IOException {
+  private void createImage(URL url, ImageSize size) throws IOException {
     File orig = location(url, ImageSize.ORIGINAL);
     File calc = location(url, size);
     BufferedImage bufferedImage = ImageIO.read(orig);
