@@ -80,8 +80,7 @@ public class ImageCacheService {
       // now produce thumbnails from the original
       produceImage(url, ImageSize.THUMBNAIL, ImageSize.SMALL, ImageSize.MIDSIZE, ImageSize.LARGE);
     } else {
-      String errMsg = String.format("Requested file doesn't exist %s", url);
-      throw new IOException(errMsg);
+      throw new IOException(String.format("Requested file doesn't exist %s", url));
     }
   }
 
