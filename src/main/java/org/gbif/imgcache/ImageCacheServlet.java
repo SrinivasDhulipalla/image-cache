@@ -46,6 +46,11 @@ public class ImageCacheServlet extends HttpServlet {
         LOG.warn(errMsg);
         LOG.debug(errMsg, e);
         resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
+      } catch (NullPointerException e) {
+        String errMsg = String.format("Likely unsupported format, or not an image '%s'", url);
+        LOG.warn(errMsg);
+        LOG.debug(errMsg, e);
+        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
       } finally {
         resp.flushBuffer();
       }
