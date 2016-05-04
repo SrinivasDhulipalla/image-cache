@@ -42,12 +42,12 @@ public class ImageCacheServlet extends HttpServlet {
         resp.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=604800");
         ByteStreams.copy(img.openStream(), resp.getOutputStream());
       } catch (IOException e) {
-        String errMsg = String.format("No image found for url '%s'", url);
+        String errMsg = String.format("No image found for url %s ", url);
         LOG.warn(errMsg);
         LOG.debug(errMsg, e);
         resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
       } catch (NullPointerException e) {
-        String errMsg = String.format("Likely unsupported format, or not an image '%s'", url);
+        String errMsg = String.format("Likely unsupported format, or not an image %s ", url);
         LOG.warn(errMsg);
         LOG.debug(errMsg, e);
         resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
