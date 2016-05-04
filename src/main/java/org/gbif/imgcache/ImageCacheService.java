@@ -9,13 +9,13 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import javax.imageio.ImageIO;
 
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Closer;
+import com.google.common.net.HttpHeaders;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.coobird.thumbnailator.Thumbnails;
@@ -74,49 +74,61 @@ public class ImageCacheService {
   }
 
   private void cacheImage(URL url) throws IOException {
-    if (exists(url)) {
-      // download original
-      LOG.info("Caching image {}", url);
-      copyOriginal(url);
-      // now produce thumbnails from the original
-      produceImage(url, ImageSize.THUMBNAIL, ImageSize.SMALL, ImageSize.MIDSIZE, ImageSize.LARGE);
-    } else {
-      throw new IOException(String.format("Requested file doesn't exist %s", url));
-    }
+    LOG.info("Caching image {}", url);
+    copyOriginal(url);
+    // now produce thumbnails from the original
+    produceImage(url, ImageSize.THUMBNAIL, ImageSize.SMALL, ImageSize.MIDSIZE, ImageSize.LARGE);
   }
 
   /**
    * Creates a copy of the file with its original size.
    */
   private void copyOriginal(URL url) throws IOException {
-    File origImg = location(url, ImageSize.ORIGINAL);
-
     OutputStream out = null;
     InputStream source = null;
     try (Closer closer = Closer.create()) {
-      URLConnection con = url.openConnection();
-      con.setConnectTimeout(CONNECT_TIMEOUT_MS);
-      con.setReadTimeout(TIMEOUT_MS);
+      HttpURLConnection con = null;
+      URL currentUrl = url;
+      int resp;
+      int redirectCount = 0;
+
+      // Handle redirects manually, so HTTP→HTTPS and vice versa work.
+      while (true) {
+        con = (HttpURLConnection) currentUrl.openConnection();
+        con.setConnectTimeout(CONNECT_TIMEOUT_MS);
+        con.setReadTimeout(TIMEOUT_MS);
+        con.setRequestProperty(HttpHeaders.USER_AGENT, "GBIF image cache");
+
+        LOG.debug("URL {} gave HTTP response {}", currentUrl, con.getResponseCode());
+
+        resp = con.getResponseCode();
+        if (resp == HttpURLConnection.HTTP_MOVED_PERM
+                || resp == HttpURLConnection.HTTP_MOVED_PERM
+                || resp == HttpURLConnection.HTTP_SEE_OTHER) {
+          redirectCount++;
+
+          if (redirectCount > 10) {
+            throw new IOException(String.format("Too many redirects when retrieving from URL %s", url));
+          } else {
+            String location = con.getHeaderField(HttpHeaders.LOCATION);
+            currentUrl = new URL(currentUrl, location);
+            continue;
+          }
+        }
+        break;
+      }
+
+      if (resp != HttpURLConnection.HTTP_OK) {
+        throw new IOException(String.format("HTTP %s when retrieving from URL %s (%i redirects, started at %s)", resp, currentUrl, redirectCount, url));
+      }
+
       source = closer.register(con.getInputStream());
+
       // create parent folder that is unique for the original image
+      File origImg = location(url, ImageSize.ORIGINAL);
       origImg.getParentFile().mkdir();
       out = closer.register(new FileOutputStream(origImg));
       ByteStreams.copy(source, out);
-    }
-  }
-
-  /**
-   * Checks if the remote URL exists.
-   */
-  private static boolean exists(URL url) {
-    try {
-      HttpURLConnection.setFollowRedirects(false);
-      HttpURLConnection con = (HttpURLConnection) url.openConnection();
-      con.setRequestMethod(HEAD_METHOD);
-      return HttpURLConnection.HTTP_OK == con.getResponseCode();
-    } catch (Exception e) {
-      LOG.error(String.format("Error getting file %s", url), e);
-      return false;
     }
   }
 
