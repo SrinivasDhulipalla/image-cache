@@ -19,6 +19,7 @@ import com.google.common.io.Closer;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,8 @@ public class ImageCacheService {
 
   private final File repo;
   private static final String ENC = "UTF8";
-  private static final String PNG_FMT = "png";
-  private static final String MIME_TYPE = "image/" + PNG_FMT;
+  private static final String TARGET_FMT = "jpeg";
+  private static final String MIME_TYPE = "image/" + TARGET_FMT;
   private static final String DFT_FILENAME = "image";
   private static final String HEAD_METHOD = "HEAD";
   private static final int TIMEOUT_MS = 2*60*1000;  // 2 minutes
@@ -39,7 +40,7 @@ public class ImageCacheService {
   public ImageCacheService(@Named("imgcache.repository") String repository) {
     repo = new File(repository);
     LOG.info("Use image repository {}", repo.getAbsolutePath());
-    if (!repo.exists() && !repo.isDirectory()) {
+    if (!repo.exists() && !repo.isDirectory() && !repo.canWrite()) {
       throw new IllegalStateException("imgcache.repository needs to be an existing, writable directory: "
         + repo.getAbsolutePath());
     }
@@ -52,7 +53,7 @@ public class ImageCacheService {
     if (!imgFile.exists()) {
       cacheImage(url);
     }
-    // TODO: store mime type or deduct from image/file suffix
+    // TODO: store mime type or deduce from image/file suffix
     return new CachedImage(url, size, MIME_TYPE, imgFile);
   }
 
@@ -66,7 +67,7 @@ public class ImageCacheService {
     }
 
     if (size != ImageSize.ORIGINAL) {
-      fileName += "-" + size.name().charAt(0) + "." + PNG_FMT;
+      fileName += "-" + size.name().charAt(0) + "." + TARGET_FMT;
     }
 
     return fileName;
@@ -151,11 +152,12 @@ public class ImageCacheService {
     BufferedImage bufferedImage = ImageIO.read(orig);
     Thumbnails.Builder<BufferedImage> thumb = Thumbnails.of(bufferedImage)
       .size(size.width, size.height)
-      .outputFormat(PNG_FMT);
+      .outputFormat(TARGET_FMT)
+      .outputQuality(0.85);
 
-    // make sure thumbnails have the same square size
+    // crop thumbnails to squares
     if (ImageSize.THUMBNAIL == size) {
-      thumb.keepAspectRatio(false);
+      thumb.crop(Positions.CENTER);
     }
 
     // process

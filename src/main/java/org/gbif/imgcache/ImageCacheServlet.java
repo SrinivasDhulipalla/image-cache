@@ -39,10 +39,12 @@ public class ImageCacheServlet extends HttpServlet {
       try {
         CachedImage img = cache.get(url, size);
         resp.setHeader(HttpHeaders.CONTENT_TYPE, img.getMimeType());
+        resp.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=604800");
         ByteStreams.copy(img.openStream(), resp.getOutputStream());
       } catch (IOException e) {
         String errMsg = String.format("No image found for url '%s'", url);
-        LOG.error(errMsg, e);
+        LOG.warn(errMsg);
+        LOG.debug(errMsg, e);
         resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
       } finally {
         resp.flushBuffer();
