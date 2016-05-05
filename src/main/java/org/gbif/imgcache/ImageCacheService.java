@@ -98,10 +98,9 @@ public class ImageCacheService {
         con.setConnectTimeout(CONNECT_TIMEOUT_MS);
         con.setReadTimeout(TIMEOUT_MS);
         con.setRequestProperty(HttpHeaders.USER_AGENT, "GBIF image cache");
-
-        LOG.debug("URL {} gave HTTP response {}", currentUrl, con.getResponseCode());
-
         resp = con.getResponseCode();
+        LOG.debug("URL {} gave HTTP response {}", currentUrl, resp);
+
         if (resp == HttpURLConnection.HTTP_MOVED_PERM
                 || resp == HttpURLConnection.HTTP_MOVED_PERM
                 || resp == HttpURLConnection.HTTP_SEE_OTHER) {
@@ -119,7 +118,7 @@ public class ImageCacheService {
       }
 
       if (resp != HttpURLConnection.HTTP_OK) {
-        throw new IOException(String.format("HTTP %s when retrieving from URL %s (%i redirects, started at %s)", resp, currentUrl, redirectCount, url));
+        throw new IOException(String.format("HTTP %s when retrieving from URL %s (%d redirects, started at %s)", resp, currentUrl, redirectCount, url));
       }
 
       source = closer.register(con.getInputStream());
