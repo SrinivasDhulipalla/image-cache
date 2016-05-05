@@ -1,6 +1,7 @@
 package org.gbif.imgcache;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -34,30 +35,36 @@ public class ImageCacheServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final ImageSize size = ImageSize.fromString(req.getParameter(SIZE_PARAM));
 
+    URL url = null;
     try {
-      URL url = new URL(req.getParameter(URL_PARAM));
-      try {
-        CachedImage img = cache.get(url, size);
-        resp.setHeader(HttpHeaders.CONTENT_TYPE, img.getMimeType());
-        resp.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=604800");
-        ByteStreams.copy(img.openStream(), resp.getOutputStream());
-      } catch (IOException e) {
-        String errMsg = String.format("No image found for url %s ", url);
-        LOG.warn(errMsg);
-        LOG.debug(errMsg, e);
-        resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
-      } catch (NullPointerException e) {
-        String errMsg = String.format("Likely unsupported format, or not an image %s ", url);
-        LOG.warn(errMsg);
-        LOG.debug(errMsg, e);
-        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
-      } finally {
-        resp.flushBuffer();
-      }
+      LOG.debug("URL parameter is {}", req.getParameter(URL_PARAM));
+      url = new URL(req.getParameter(URL_PARAM));
 
+      CachedImage img = cache.get(url, size);
+      resp.setHeader(HttpHeaders.CONTENT_TYPE, img.getMimeType());
+      resp.setHeader(HttpHeaders.CACHE_CONTROL, "public, max-age=31536000");
+      ByteStreams.copy(img.openStream(), resp.getOutputStream());
+    } catch (MalformedURLException e) {
+      String errMsg = String.format("Invalid image URL requested %s", req.getParameter(URL_PARAM));
+      LOG.warn(errMsg);
+      LOG.debug(errMsg, e);
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, errMsg);
+    } catch (IOException e) {
+      String errMsg = String.format("No image found for url %s", url);
+      LOG.warn(errMsg);
+      LOG.debug(errMsg, e);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, errMsg);
+    } catch (NullPointerException e) {
+      String errMsg = String.format("Likely unsupported format, or not an image %s", url);
+      LOG.warn(errMsg);
+      LOG.debug(errMsg, e);
+      resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, errMsg);
     } catch (Exception e) {
-      LOG.error("Invalid image url requested", e);
-      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Please provide a valid image url parameter");
+      String errMsg = String.format("Unknown error processing URL %s", url);
+      LOG.error(errMsg, e);
+      resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, errMsg);
+    } finally {
+      resp.flushBuffer();
     }
   }
 }
