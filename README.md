@@ -11,6 +11,7 @@ can be requested in different contexts in the GBIF portal.  The image versions s
 
 Image format support is that supported by `[javax.imageio](https://docs.oracle.com/javase/8/docs/api/javax/imageio/package-summary.html#package.description)`.
 By default, that includes JPEG, PNG, BMP, WBMP and GIF support.  TIFF support has been added using the [TwelveMonkey's ImageIO library](http://haraldk.github.io/TwelveMonkeys/).
+JPEG2000 support has been added using the [jai-imageio-jpeg2000 library](https://github.com/jai-imageio/jai-imageio-jpeg2000).
 
 ## To build the project
 
