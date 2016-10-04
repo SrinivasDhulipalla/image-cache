@@ -1,5 +1,12 @@
 # Image Cache
 
+## Unmaintained
+
+**This project is no longer being developed.  GBIF are now using [Thumbor](http://thumbor.org/), rather than developing
+our own image caching service.**
+
+## About
+
 Image Cache provides a simple caching mechanism for image files.  The exposed service receives a URL as a parameter and
 caches its content for subsequent requests for that resource.  It creates several sizes of the image that 
 can be requested in different contexts in the GBIF portal.  The image versions stored in the cache are:
